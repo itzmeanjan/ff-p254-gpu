@@ -157,8 +157,9 @@ int main(int argc, char **argv) {
               << std::endl;
   }
 
+  std::cout << "Performing massive NTT" << std::endl;
   int64_t tm = massive_ntt(q, 16ul, 1ul << 23, 1ul << 7);
-  std::cout << "massive NTT in " << (float)tm / 1000.f << " ms" << std::endl;
+  std::cout << "Completed in " << (float)tm * 1e-3 << " ms" << std::endl;
 
 #else // do nothing useful !
   std::cout << "Check "

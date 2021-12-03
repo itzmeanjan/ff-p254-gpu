@@ -21,14 +21,14 @@ int64_t massive_ntt(sycl::queue &q, const uint64_t round_size,
 
   for (uint64_t i = 0; i < round_size; i++) {
     mem[i] = static_cast<ff_p254_t *>(
-        sycl::malloc_device(sizeof(ff_p254_t) * (n1 * n2 + n2 * n2 + 3), q));
+        sycl::malloc_device(sizeof(ff_p254_t) * (n1 * n2 + n * n + 3), q));
 
     sycl::event evt_0_a =
         q.memcpy(mem[i], vec_h + dim * i, sizeof(ff_p254_t) * dim);
     sycl::event evt_0_b =
-        six_step_fft(q, mem[i], mem[i] + dim, mem[i] + dim + n2 * n2 + 0,
-                     mem[i] + dim + n2 * n2 + 1, mem[i] + dim + n2 * n2 + 2,
-                     dim, wg_size, {evt_0_a});
+        six_step_fft(q, mem[i], mem[i] + dim, mem[i] + dim + n * n + 0,
+                     mem[i] + dim + n * n + 1, mem[i] + dim + n * n + 2, dim,
+                     wg_size, {evt_0_a});
     sycl::event evt_0_c =
         q.memcpy(vec_h + dim * i, mem[i], sizeof(ff_p254_t) * dim);
 
