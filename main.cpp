@@ -1,6 +1,7 @@
 #include <bench_ntt.hpp>
 #include <iomanip>
 #include <iostream>
+#include <massive_ntt.hpp>
 #include <test.hpp>
 
 int main(int argc, char **argv) {
@@ -17,10 +18,12 @@ int main(int argc, char **argv) {
 
   // check with rectangular matrix
   test_matrix_transposed_initialise(q, 1ul << 15, 1ul << 6);
-  std::cout << "passed matrix transposed initialisation tests ! [rectangular]" << std::endl;
+  std::cout << "passed matrix transposed initialisation tests ! [rectangular]"
+            << std::endl;
   // check with square matrix
   test_matrix_transposed_initialise(q, 1ul << 16, 1ul << 6);
-  std::cout << "passed matrix transposed initialisation tests ! [square]" << std::endl;
+  std::cout << "passed matrix transposed initialisation tests ! [square]"
+            << std::endl;
 
   // takes square matrix of dim x dim size, transposes twice
   // finally asserts with original matrix
@@ -28,7 +31,8 @@ int main(int argc, char **argv) {
   std::cout << "passed matrix transposition tests !" << std::endl;
 
   test_twiddle_multiplication(q, 1ul << 15, 1ul << 6);
-  std::cout << "passed twiddle multiplication tests ! [rectangular]" << std::endl;
+  std::cout << "passed twiddle multiplication tests ! [rectangular]"
+            << std::endl;
   test_twiddle_multiplication(q, 1ul << 16, 1ul << 6);
   std::cout << "passed twiddle multiplication tests ! [square]" << std::endl;
 
@@ -153,8 +157,14 @@ int main(int argc, char **argv) {
               << std::endl;
   }
 
+  int64_t tm = massive_ntt(q, 16ul, 1ul << 23, 1ul << 7);
+  std::cout << "massive NTT in " << (float)tm / 1000.f << " ms" << std::endl;
+
 #else // do nothing useful !
-  std::cout << "Check https://github.com/itzmeanjan/ff-p254-gpu/blob/288091435f7af607cf4681ebad54667effc4ecbc/Makefile#L8-L19" << std::endl;
+  std::cout << "Check "
+               "https://github.com/itzmeanjan/ff-p254-gpu/blob/"
+               "288091435f7af607cf4681ebad54667effc4ecbc/Makefile#L8-L19"
+            << std::endl;
 #endif
 
   return 0;
