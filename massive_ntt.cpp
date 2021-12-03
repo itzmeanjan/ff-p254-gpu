@@ -35,7 +35,8 @@ int64_t massive_ntt(sycl::queue &q, const uint64_t round_size,
     evts[i] = evt_0_c;
   }
 
-  q.submit_barrier(evts);
+  // instead of using submit_barrier
+  q.submit([&](sycl::handler &h) { h.depends_on(evts); }).wait();
 
   tp end = std::chrono::system_clock::now();
 
