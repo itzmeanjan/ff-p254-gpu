@@ -9,7 +9,12 @@ int64_t massive_ntt(sycl::queue &q, const uint64_t round_size,
 
   ff_p254_t *vec_h = static_cast<ff_p254_t *>(
       sycl::malloc_host(sizeof(ff_p254_t) * dim * round_size, q));
-  prepare_random_vector(vec_h, dim * round_size);
+  // I just populate input of single round with random elements
+  // All rounds compute on same input, after they copy same input
+  // data from host to device
+  // But output doesn't end up modifying same memory locations
+  // for all rounds
+  prepare_random_vector(vec_h, dim);
 
   std::vector<ff_p254_t *> mem;
   std::vector<sycl::event> evts;
@@ -23,8 +28,7 @@ int64_t massive_ntt(sycl::queue &q, const uint64_t round_size,
     mem[i] = static_cast<ff_p254_t *>(
         sycl::malloc_device(sizeof(ff_p254_t) * (n1 * n2 + n * n + 3), q));
 
-    sycl::event evt_0_a =
-        q.memcpy(mem[i], vec_h + dim * i, sizeof(ff_p254_t) * dim);
+    sycl::event evt_0_a = q.memcpy(mem[i], vec_h, sizeof(ff_p254_t) * dim);
     sycl::event evt_0_b =
         six_step_fft(q, mem[i], mem[i] + dim, mem[i] + dim + n * n + 0,
                      mem[i] + dim + n * n + 1, mem[i] + dim + n * n + 2, dim,
